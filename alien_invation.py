@@ -11,7 +11,6 @@ from bullet import Bullet
 
 class AlienInvation:
 
-
     def __init__(self) -> None:
 
         pygame.init()
@@ -32,9 +31,10 @@ class AlienInvation:
         """Runs games main loop"""
         while True:
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+            if self.stats.game_active == True:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
             self._update_screen()
 
     def _create_fleet(self):
@@ -84,28 +84,43 @@ class AlienInvation:
         self._check_alien_bullet_collision()
 
     def _check_alien_bullet_collision(self):
-        """Cheks collisions between bullets and aliens"""
+        """Cheks the collisions of bullets with aliens"""
         pygame.sprite.groupcollide(
             self.bullets, self.aliens, True, True)
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
 
-    def _update_aliens(self):
-        """Controls fleet direction and updates aliens position"""
-        self._control_fleet_direction()
-        self.aliens.update()
+    def _check_alien_ship_collision(self):
+        """Check collision of ship with aliens """
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
 
+    def _check_aliens_bottom(self):
+        """Check collision of aliens with ground """
+        screen_bot = self.screen.get_rect().bottom
+        for alien in self.aliens:
+            if alien.rect.bottom > screen_bot:
+                self._ship_hit()
+
+    def _update_aliens(self):
+        """Controls fleet direction and updates aliens position"""
+        self._control_fleet_direction()
+        self._check_alien_ship_collision()
+        self._check_aliens_bottom()
+        self.aliens.update()
+
     def _ship_hit(self):
-        """Handling collision between ship and aliens"""
-        self.stats.ships_left -= 1
+        """Handling collision of ship with aliens"""
+        sleep(0.5)
+        if self.stats.ships_left > 0:
+            self.stats.ships_left -= 1
+        else:
+            self.stats.game_active = False
         self.aliens.empty()
         self.bullets.empty()
         self._create_fleet()
         self.ship.center_ship()
-        sleep(0.5)
 
     def _update_screen(self):
         """Updating screen image"""
