@@ -1,5 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
+
+
 class Alien(Sprite):
     """Single alien class"""
 
