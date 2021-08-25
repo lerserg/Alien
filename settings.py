@@ -6,6 +6,7 @@ class Settings:
         #resourses
         self.ship_img = 'images/ship.bmp'
         self.alien_img = 'images/alien.bmp'
+        self.save_file = 'saves.json'
         #screen
         self.screen_width = 800
         self.screen_height = 400
@@ -24,6 +25,7 @@ class Settings:
         self.alien_direction = -1
         #game temp
         self.speedup_scale = 1.1
+        self.score_scale = 1.5
 
         self.initialize_dynamic_settings()
 
@@ -38,3 +40,4 @@ class Settings:
         self.ship_speed *= self.speedup_scale
         self.bullet_speed *= self.speedup_scale
         self.alien_speed *= self.speedup_scale
+        self.alien_point = int(self.score_scale * self.alien_point)
