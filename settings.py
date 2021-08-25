@@ -3,27 +3,27 @@ class Settings:
 
     def __init__(self) -> None:
         """Initializes static game settings"""
-        #resourses
+        # resourses
         self.ship_img = 'images/ship.bmp'
         self.alien_img = 'images/alien.bmp'
         self.save_file = 'saves.json'
-        #screen
+        # screen
         self.screen_width = 800
         self.screen_height = 400
         self.bg_color = (25, 25, 112)
-        #ship
+        # ship
         self.ship_limit = 3
-        #bullets
+        # bullets
         self.bullet_speed = 5
         self.bullet_width = 3
         self.bullet_height = 15
-        self.bullet_color = (255,0,0)
+        self.bullet_color = (255, 0, 0)
         self.bullets_allowed = 3
-        #aliens
+        # aliens
         self.alien_speed = 0.7
-        self.alien_drop_speed = 10
+        self.alien_drop_speed = 50
         self.alien_direction = -1
-        #game temp
+        # game temp
         self.speedup_scale = 1.1
         self.score_scale = 1.5
 
