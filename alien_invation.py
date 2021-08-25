@@ -9,6 +9,9 @@ from ship import Ship
 from bullet import Bullet
 from button import Button
 from scoreboard import Scoreboard
+import json
+import os.path
+import io
 
 
 class AlienInvation:
@@ -91,14 +94,18 @@ class AlienInvation:
     def _check_alien_bullet_collision(self):
         """Cheks the collisions of bullets with aliens"""
         collisions = pygame.sprite.groupcollide(
-            self.bullets, self.aliens, True, True)
+            self.bullets, self.aliens, False, True)
         if collisions:
-            self.stats.score += self.settings.alien_point
-            self.scoreboard.prep_score()
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_point * len(aliens)
+                self.scoreboard.prep_score()
+                self.scoreboard.check_highscore()
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+            self.stats.level += 1
+            self.scoreboard.prep_level()
 
     def _check_alien_ship_collision(self):
         """Check collision of ship with aliens """
@@ -124,6 +131,7 @@ class AlienInvation:
         sleep(0.5)
         if self.stats.ships_left > 0:
             self.stats.ships_left -= 1
+            self.scoreboard.prep_ships()
         else:
             self.stats.game_active = False
             pygame.mouse.set_visible(True)
@@ -148,7 +156,7 @@ class AlienInvation:
         """Process events"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit()
+                self.exit_game()
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown(event)
             elif event.type == pygame.KEYUP:
@@ -169,7 +177,7 @@ class AlienInvation:
             if len(self.bullets) < self.settings.bullets_allowed:
                 self._fire_bullet()
         elif event.key == pygame.K_q:
-            sys.exit()
+            self.exit_game()
 
     def _check_keyup(self, event):
         """Checks the reliased button"""
@@ -184,7 +192,11 @@ class AlienInvation:
             self.start_game()
 
     def start_game(self):
+        self.load_high_score()
         self.settings.initialize_dynamic_settings()
+        self.scoreboard.prep_level()
+        self.scoreboard.prep_score()
+        self.scoreboard.prep_high_score()
         pygame.mouse.set_visible(False)
         self.stats.game_active = True
         self.stats.reset_stats()
@@ -197,6 +209,24 @@ class AlienInvation:
         """Create bullet"""
         new_bullet = Bullet(self)
         self.bullets.add(new_bullet)
+
+    def save_high_score(self):
+        high_score = {'high_score': self.stats.high_score}
+        with open(self.settings.save_file, 'w') as f:
+            json.dump(high_score, f)
+
+    def load_high_score(self):
+        print('loading')
+        if os.path.exists(self.settings.save_file):                        
+            with open(self.settings.save_file, 'r') as f:
+                if f.read().strip():
+                    f.seek(io.SEEK_SET)
+                    self.stats.high_score = int(json.load(f)['high_score'])
+                    print(self.stats.high_score)
+
+    def exit_game(self):
+        self.save_high_score()
+        sys.exit()
 
 
 if __name__ == '__main__':
