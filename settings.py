@@ -21,7 +21,7 @@ class Settings:
         self.bullets_allowed = 3
         # aliens
         self.alien_speed = 0.7
-        self.alien_drop_speed = 50
+        self.alien_drop_speed = 10
         self.alien_direction = -1
         # game temp
         self.speedup_scale = 1.1
