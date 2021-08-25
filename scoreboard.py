@@ -2,7 +2,9 @@ import pygame.font
 from ship import Ship
 from pygame.sprite import Group
 
+
 class Scoreboard:
+    """Game informashion displaing class"""
 
     def __init__(self, game) -> None:
         self.game = game
@@ -15,11 +17,10 @@ class Scoreboard:
         self.prep_score()
         self.prep_high_score()
         self.prep_level()
-        self.ships = Group()
         self.prep_ships()
-        
 
     def prep_score(self):
+        """Convert score to image"""
         score_str = f'{round(self.stats.score, -1):,}'
         self.score_img = self.font.render(score_str, True, self.text_color)
         self.score_rect = self.score_img.get_rect()
@@ -27,6 +28,7 @@ class Scoreboard:
         self.score_rect.top = 20
 
     def prep_high_score(self):
+        """Convert high score to image"""
         high_score_str = f'{round(self.stats.high_score, -1):,}'
         self.high_score_img = self.font.render(
             high_score_str, True, self.text_color)
@@ -35,14 +37,17 @@ class Scoreboard:
         self.high_score_rect.top = 20
 
     def prep_level(self):
+        """Convert level to image"""
         level_str = str(self.stats.level)
         self.level_img = self.font.render(
             level_str, True, self.text_color)
         self.level_rect = self.level_img.get_rect()
         self.level_rect.right = self.score_rect.right
         self.level_rect.top = self.score_rect.bottom + 10
-    
+
     def prep_ships(self):
+        """Convert ships quantity to image"""
+        self.ships = Group()
         for ship_number in range(self.stats.ships_left):
             ship = Ship(self.game)
             ship.rect.x = ship.rect.width * ship_number + 10
@@ -50,12 +55,14 @@ class Scoreboard:
             self.ships.add(ship)
 
     def draw_score(self):
+        """Draw game information"""
         self.screen.blit(self.score_img, self.score_rect)
         self.screen.blit(self.high_score_img, self.high_score_rect)
         self.screen.blit(self.level_img, self.level_rect)
         self.ships.draw(self.screen)
 
     def check_highscore(self):
+        """Defines next high score"""
         if self.stats.score > self.stats.high_score:
             self.stats.high_score = self.stats.score
             self.prep_high_score()
