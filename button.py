@@ -8,7 +8,7 @@ class Button:
         self.screen_rect = self.screen.get_rect()
         self.width = 200
         self.height = 100
-        self.button_color = (0, 255, 0)
+        self.button_color = (70, 130, 180)
         self.text_color = (255, 255, 255)
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.center = self.screen_rect.center
